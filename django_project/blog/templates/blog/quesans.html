@@ -1,0 +1,66 @@
+{% extends "blog/base.html" %}
+{% block content %}
+  {% if user.is_authenticated %}
+    {% for ques in questions%}
+      <div class="content-section">
+        <h3>Question :</h3>
+        <article class="media content-section">
+            <img class="rounded-circle article-img" src="{{ ques.author.profile.image.url }}" alt="user-img">
+            <div class="media-body">
+              <div class="article-metadata">
+                <a class="mr-2" href="{% url 'user-ques' ques.author.username %}">{{ ques.author }}</a>
+                <small class="text-muted">{{ ques.date_posted|date:"F d, Y P" }}</small>
+                {% if ques.author == user %}
+                  <div>
+                    <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'ques-update' ques.id %}">Update</a>
+                    <a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'ques-delete' ques.id %}">Delete</a>
+                  </div>
+                {% endif %}
+              </div>
+              <h2><a class="article-title" href="{% url 'ques-detail' ques.id %}">{{ ques.question }}</a></h2>
+            </div>
+        </article>
+        <h3>Answer :</h3>
+            {% for ans in qans %}
+                <article class="media content-section">
+                    <img class="rounded-circle article-img" src="{{ ans.author.profile.image.url }}" alt="user-img">
+                    <div class="media-body">
+                        <div class="article-metadata">
+                            <a class="mr-2" href="{% url 'user-ques' ans.author.username %}">{{ ans.author }}</a>
+                            <small class="text-muted">{{ ans.date_posted|date:"F d, Y P" }}</small>
+                            {% if ans.author == user %}
+                              <div>
+                                <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'ans-update' ans.id %}">Update</a>
+                                <a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'ans-delete' ans.id %}">Delete</a>
+                              </div>
+                            {% endif %}
+                        </div>
+                        <h2 class="article-title">{{ ans.answer }}</h2>
+                    </div>
+                    </article>  
+            {% endfor %}
+          </div>
+    {% endfor %}
+
+    {% if is_paginated %}
+          {% if page_obj.has_previous %}
+            <a class="btn btn-outline-info mb-4" href="?page=1">First</a>
+            <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.previous_page_number }}">Previos</a>
+          {% endif %}
+
+          {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+              <a class="btn btn-info mb-4" href="?page={{ num }}">{{ num }}</a>
+            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3'%}
+            <a class="btn btn-outline-info mb-4" href="?page={{ num }}">{{ num }}</a>
+            {% endif %}
+          {% endfor %}
+
+          {% if page_obj.has_next %}
+            <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.next_page_number }}">Next</a>
+            <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+          {% endif %}
+
+    {% endif %}
+  {% endif %}
+{% endblock content %}

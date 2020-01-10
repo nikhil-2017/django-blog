@@ -1,0 +1,15 @@
+{% extends "blog/base.html" %}
+{% block content %}
+{% if user.is_authenticated %}
+    <article class="media content-section">
+        <img class="rounded-circle article-img" src="{{ user.profile.image.url }}" alt="user-img">
+        <div class="media-body">
+          <div class="article-metadata">
+            <a class="mr-2" href="{% url 'blog-about' %}">About Page</a>
+          </div>
+          <p><img class="img-size" src="{{ user.profile.image.url }}" alt="user-imgpost"></p>
+          <h2>This website is created by nikhil.</h2>
+        </div>
+    </article>
+{% endif %}
+{% endblock content %}
